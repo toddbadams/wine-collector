@@ -21,6 +21,7 @@ namespace cqrs.Commands
         [JsonProperty("value")]
         public JObject Value { get; }
 
+        [JsonConstructor]
         public Command(Guid aggregateId, int sequence, CommandName name, JObject value)
         {
             AggregateId = aggregateId != Guid.Empty

@@ -1,15 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace cqrs.ApiModels
 {
     public class WineEntryCreateRequest
     {
+        [JsonProperty("quantity")]
+        [Required, Range(1,int.MaxValue)]
         public int Quantity { get; set; }
-        public int BottleSize { get; set; }
-        public int BottlesPerCase { get; set; }
+
+        [JsonProperty("BottleSize")]
+        [Required]
+        public BottleSize BottleSize { get; set; }
+
+        [JsonProperty("bottlesPerCase")]
+        [Required]
+        public BottlesPerCase BottlesPerCase { get; set; }
+
+        [JsonProperty("acquiredOn")]
         public DateTimeOffset AcquiredOn { get; set; }
+
+        [JsonProperty("costPerBottle")]
         public decimal CostPerBottle { get; set; }
-        public Guid CellarId { get; set; }
-        public Guid WineId { get; set; }
+
+        [JsonProperty("cellar")]
+        [Required]
+        public KeyValuePair<Guid, string> Cellar { get; set; }
+
+        [JsonProperty("wine")]
+        [Required]
+        public KeyValuePair<Guid, string> Wine { get; set; }
     }
 }

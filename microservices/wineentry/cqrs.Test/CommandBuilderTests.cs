@@ -8,14 +8,14 @@ using Xunit;
 
 namespace cqrs.Test
 {
-    public class CommandBuilderTests
+    public class CommandCollectionTests
     {
 
         [Fact]
         public void Ctor_Should_Throw_ArgumentException_Given_Negative_Sequence()
         {
             // arrange 
-            Action act = () => new CommandBuilder(-1);
+            Action act = () => new CommandCollection(-1);
 
             // assert
             act.Should().Throw<ArgumentException>()
@@ -26,7 +26,7 @@ namespace cqrs.Test
         public void Commands_Should_Be_Empty_Given_None_Added()
         {
             // arrange 
-            var commands = new CommandBuilder(4);
+            var commands = new CommandCollection(4);
 
             // act
 
@@ -38,7 +38,7 @@ namespace cqrs.Test
         public void Sequence_Should_Be_Parameter_Given_Zero_Or_Positive_Sequence()
         {
             // arrange 
-            var commands = new CommandBuilder(4);
+            var commands = new CommandCollection(4);
 
             // act
             commands.Add(Guid.NewGuid(), CommandName.SetAcquiredOn, new JObject());
@@ -51,7 +51,7 @@ namespace cqrs.Test
         public void Commands_Should_Enumerate_Given_Added_Commands()
         {
             // arrange 
-            var commands = new CommandBuilder(4).Add(Guid.NewGuid(), CommandName.SetAcquiredOn, new JObject());
+            var commands = new CommandCollection(4).Add(Guid.NewGuid(), CommandName.SetAcquiredOn, new JObject());
 
             // act & assert
             ((IEnumerable)commands)
