@@ -55,8 +55,8 @@ namespace cqrs.Test
 
             // act & assert
             ((IEnumerable)commands)
-                 .GetEnumerator()
-                 .MoveNext()
+                .GetEnumerator()
+                .MoveNext()
                 .Should().BeTrue();
         }
     }
