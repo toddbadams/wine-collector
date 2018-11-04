@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace cqrs.Test
+namespace cqrs.Test.Commands
 {
     public class CommandTests
     {
