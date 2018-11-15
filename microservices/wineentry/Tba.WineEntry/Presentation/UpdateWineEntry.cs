@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Tba.WineEntry.Application.Commands;
 using Tba.WineEntry.Application.Commands.Create;
+using Tba.WineEntry.Application.Commands.Update;
 using Tba.WineEntry.Application.Configuration;
 
 namespace cqrs
 {
-    public static class CreateWineEntry
+    public static class UpdateWineEntry
     {
-        [FunctionName("CreateWineEntry")]
+        [FunctionName("UpdateWineEntry")]
         public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = Config.Route)]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = Config.Route)]HttpRequestMessage req,
             [CosmosDBTrigger(Config.Db, Config.Collection, 
                 ConnectionStringSetting = Config.DbConnectionStringSetting)]IAsyncCollector<Command> commandsOut,
 
@@ -25,17 +26,17 @@ namespace cqrs
         {
             var correlationId = Guid.NewGuid().ToString();
             // Deserialize & Validate
-            CreateWineEntryRequest createRequest = null;
+            UpdateRequest request = null;
             try
             {
-                createRequest = await req.Content.ReadAsAsync<CreateWineEntryRequest>();
+                request = await req.Content.ReadAsAsync<UpdateRequest>();
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ValidationSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),
                     correlationId,
-                    nameof(CreateWineEntryRequest),
+                    nameof(UpdateRequest),
                     null,
-                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(createRequest)}");
+                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(request)}");
             }
             catch (Exception ex)
             {
@@ -44,16 +45,16 @@ namespace cqrs
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),
                     correlationId,
-                    nameof(CreateWineEntryRequest),
+                    nameof(UpdateRequest),
                     null,
-                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(createRequest)}");
+                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(request)}");
             }
 
             // Convert to commands
             Command command = null;
             try
             {
-                command = new Command(Guid.NewGuid(), 0, EventName.WineEntryCreated, new JObject(createRequest));
+                command = new Command(Guid.NewGuid(), 0, EventName.WineEntryCreated, new JObject(request));
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ProcessingSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),

@@ -7,7 +7,10 @@ namespace Tba.WineEntry.Application.Configuration
     {
         internal const string Db = "WineEntry";
         internal const string Collection = "Wines";
-        internal const string DbConnectionString = "WineEntryDbConnectionString";
+        internal const string DbConnectionStringSetting = "CosmosConnectionString";
+        internal const string TopicSendConnectionStringSetting = "TopicSendConnectionString";
+        internal const string Route = "wines";
+        internal const string Topic = "wine-entry";
 
         internal static class Logging
         {
@@ -16,7 +19,8 @@ namespace Tba.WineEntry.Application.Configuration
             {
                 Http,
                 Publisher,
-                Subscriber
+                Subscriber,
+                ChangeFeed
             }
 
             internal enum EventType
