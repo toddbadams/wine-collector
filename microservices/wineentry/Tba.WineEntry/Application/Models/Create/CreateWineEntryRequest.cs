@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using Tba.WineEntry.Domain.Enums;
 
 namespace Tba.WineEntry.Application.Models.Create
 {

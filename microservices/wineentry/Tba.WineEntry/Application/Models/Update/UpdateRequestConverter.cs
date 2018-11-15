@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using cqrs.Commands;
 using Newtonsoft.Json.Linq;
 using Tba.WineEntry.Application.Commands;
 
@@ -8,19 +9,19 @@ namespace Tba.WineEntry.Application.Models.Update
 {
     public class UpdateRequestConverter : ITypeConverter<UpdateRequest, CommandCollection>
     {
-        private readonly IDictionary<CommandName, Func<object, JObject>> _dictionary;
+        private readonly IDictionary<EventName, Func<object, JObject>> _dictionary;
 
         public UpdateRequestConverter()
         {
-            _dictionary = new Dictionary<CommandName, Func<object, JObject>>
+            _dictionary = new Dictionary<EventName, Func<object, JObject>>
             {
-                {CommandName.SetAcquiredOn, _ =>new JObject { ["value"] = (DateTimeOffset)_ } },
-                {CommandName.SetBottleSize, _ =>new JObject { ["value"] = (int)_ } },
-                {CommandName.SetBottlesPerCase, _ =>new JObject { ["value"] = (int)_ } },
-                {CommandName.SetQuantity, _ =>new JObject { ["value"] = (int)_ } },
-                {CommandName.SetCostPerBottle, _ =>new JObject { ["value"] = (decimal)_ } },
-                {CommandName.SetCellar, _ => new JObject(_) },
-                {CommandName.SetWine, _ => new JObject(_) }
+                {EventName.AcquiredOnChanged, _ =>new JObject { ["value"] = (DateTimeOffset)_ } },
+                {EventName.BottleSizeChanged, _ =>new JObject { ["value"] = (int)_ } },
+                {EventName.BottlesPerCaseChanged, _ =>new JObject { ["value"] = (int)_ } },
+                {EventName.QuantityChanged, _ =>new JObject { ["value"] = (int)_ } },
+                {EventName.CostPerBottleChanged, _ =>new JObject { ["value"] = (decimal)_ } },
+                {EventName.CellarChanged, _ => new JObject(_) },
+                {EventName.WineChanged, _ => new JObject(_) }
             };
         }
 
@@ -29,7 +30,7 @@ namespace Tba.WineEntry.Application.Models.Update
             var commands = new CommandCollection(source.Version);
             foreach (var op in source.Operations)
             {
-                if (!Enum.TryParse<CommandName>(op.Operation, out var cmd))
+                if (!Enum.TryParse<EventName>(op.Operation, out var cmd))
                 {
                     throw new ArgumentException($"Invalid operation {op.Operation}");
                 }

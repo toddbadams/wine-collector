@@ -1,17 +1,15 @@
-using AutoMapper;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Tba.WineEntry.Application.Commands;
+using Tba.WineEntry.Application.Configuration;
 using Tba.WineEntry.Application.Models.Create;
-using Tba.WineEntry.Presentation.Configuration;
 
 namespace cqrs
 {
@@ -20,7 +18,7 @@ namespace cqrs
         [FunctionName("CreateWineEntry")]
         public static async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req,
-            [CosmosDBTrigger(Config.WineEntry.Db, Config.WineEntry.Collection, 
+            [CosmosDBTrigger(Config.Db, Config.Collection, 
                 ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<Command> commandsOut,
 
             ILogger log)
@@ -55,7 +53,7 @@ namespace cqrs
             Command command = null;
             try
             {
-                command = new Command(Guid.NewGuid(), 0, CommandName.WineEntryCreated, new JObject(createRequest));
+                command = new Command(Guid.NewGuid(), 0, EventName.WineEntryCreated, new JObject(createRequest));
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ProcessingSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),

@@ -13,7 +13,7 @@ namespace cqrs.Test.Commands
         public void Ctor_Should_Throw_ArgumentException_Given_Empty_AggregateId()
         {
             // arrange 
-            Action act = () => new Command(Guid.Empty, 0, CommandName.SetQuantity, new JObject());
+            Action act = () => new Command(Guid.Empty, 0, EventName.QuantityChanged, new JObject());
 
             // assert
             act.Should().Throw<ArgumentException>()
@@ -24,7 +24,7 @@ namespace cqrs.Test.Commands
         public void Ctor_Should_Throw_ArgumentException_Given_Negative_Sequence()
         {
             // arrange 
-            Action act = () => new Command(Guid.NewGuid(), -1, CommandName.SetQuantity, new JObject());
+            Action act = () => new Command(Guid.NewGuid(), -1, EventName.QuantityChanged, new JObject());
 
             // assert
             act.Should().Throw<ArgumentException>()
@@ -35,7 +35,7 @@ namespace cqrs.Test.Commands
         public void Ctor_Should_Throw_ArgumentNullException_Given_Null_Value()
         {
             // arrange 
-            Action act = () => new Command(Guid.NewGuid(), 0, CommandName.SetQuantity, null);
+            Action act = () => new Command(Guid.NewGuid(), 0, EventName.QuantityChanged, null);
 
             // assert
             act.Should().Throw<ArgumentNullException>();
@@ -48,7 +48,7 @@ namespace cqrs.Test.Commands
             var aggregateId = Guid.NewGuid();
 
             // arrange
-            var command = new Command(aggregateId, 456, CommandName.SetQuantity, new JObject());
+            var command = new Command(aggregateId, 456, EventName.QuantityChanged, new JObject());
 
             // assert
             command.Id.Should().Be(aggregateId.ToString() + "-456");
@@ -60,7 +60,7 @@ namespace cqrs.Test.Commands
             // arrange 
 
             // arrange
-            var command = new Command(Guid.NewGuid(), 456, CommandName.SetQuantity, JObject.Parse("{ 'prop': 'val' }"));
+            var command = new Command(Guid.NewGuid(), 456, EventName.QuantityChanged, JObject.Parse("{ 'prop': 'val' }"));
 
             // assert
             command.Value.GetValue("prop").Value<string>().Should().BeEquivalentTo("val");
@@ -73,9 +73,9 @@ namespace cqrs.Test.Commands
             var aggregateId = Guid.NewGuid();
             var expected = $"{{\"aggregateId\":\"{aggregateId}\"," +
                            $"\"id\":\"{aggregateId}-456\"," +
-                           "\"name\":\"SetQuantity\",\"sequence\":456,\"value\":{\"prop\":\"val\"}}";
+                           "\"name\":\"QuantityChanged\",\"sequence\":456,\"value\":{\"prop\":\"val\"}}";
 
-            var command = new Command(aggregateId, 456, CommandName.SetQuantity, JObject.Parse("{ 'prop': 'val' }"));
+            var command = new Command(aggregateId, 456, EventName.QuantityChanged, JObject.Parse("{ 'prop': 'val' }"));
 
             // arrange
             var serializedCommand = JsonConvert.SerializeObject(command);

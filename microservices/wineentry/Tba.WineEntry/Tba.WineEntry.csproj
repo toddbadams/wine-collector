@@ -18,11 +18,4 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\Interfaces\" />
-    <Folder Include="Application\Queries\" />
-    <Folder Include="Application\Processors\" />
-    <Folder Include="Domain\Exceptions\" />
-    <Folder Include="Domain\ValueObjects\" />
-  </ItemGroup>
 </Project>

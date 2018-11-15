@@ -1,4 +1,4 @@
-﻿namespace Tba.WineEntry.Domain.Enums
+﻿namespace Tba.WineEntry.Application.Models
 {
     public enum BottlesPerCase
     {

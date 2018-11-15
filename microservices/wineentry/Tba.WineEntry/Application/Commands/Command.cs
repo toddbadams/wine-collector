@@ -22,7 +22,7 @@ namespace Tba.WineEntry.Application.Commands
         public JObject Value { get; }
 
         [JsonConstructor]
-        public Command(Guid aggregateId, int sequence, CommandName name, JObject value)
+        public Command(Guid aggregateId, int sequence, EventName name, JObject value)
         {
             AggregateId = aggregateId != Guid.Empty
                 ? aggregateId

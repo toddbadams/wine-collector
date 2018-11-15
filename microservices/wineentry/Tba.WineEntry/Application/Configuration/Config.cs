@@ -1,17 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace Tba.WineEntry.Presentation.Configuration
+namespace Tba.WineEntry.Application.Configuration
 {
     internal static class Config
     {
-        internal static class WineEntry
-        {
-            internal const string Db = "WineEntry";
-            internal const string Collection = "Wines";
-            internal static string DbConnectionString => Environment.GetEnvironmentVariable("WineEntryDbConnectionString",
-                EnvironmentVariableTarget.Process);
-        }
+        internal const string Db = "WineEntry";
+        internal const string Collection = "Wines";
+        internal const string DbConnectionString = "WineEntryDbConnectionString";
 
         internal static class Logging
         {

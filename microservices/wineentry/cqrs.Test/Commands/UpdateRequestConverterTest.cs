@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using cqrs.Commands;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using Tba.WineEntry.Application.Commands;
