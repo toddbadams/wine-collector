@@ -1,18 +1,45 @@
-﻿using AutoMapper;
-using cqrs.Commands;
-using Tba.WineEntry.ApiModels.Update;
+﻿using System;
+using AutoMapper;
+using FluentAssertions;
+using Newtonsoft.Json.Linq;
+using Tba.WineEntry.Application.Commands;
+using Tba.WineEntry.Application.Models.Update;
 using Xunit;
 
-namespace cqrs.Test.Commands
+namespace Tba.WineEntry.Tests.Commands
 {
     public class UpdateRequestConverterTest
     {
-        [Fact]
-        public void test()
+        private readonly IMapper _mapper;
+
+        public UpdateRequestConverterTest()
         {
-            Mapper.Initialize(_ => _.CreateMap<UpdateRequest, CommandCollection>()
-                .ConvertUsing(new UpdateRequestConverter()));
-            Mapper.AssertConfigurationIsValid();
+            _mapper = new MapperConfiguration(_ => _.CreateMap<UpdateRequest, CommandCollection>()
+                .ConvertUsing(new UpdateRequestConverter()))
+                .CreateMapper();
+        }
+
+        [Fact]
+        public void Map_Should_Throw_ArgumentException_Given_Invalid_Operation()
+        {
+            // arrange 
+            var req = new UpdateRequest
+            {
+                Operations = new[]
+                {
+                    new UpdateOperationRequest()
+                    {
+                        Operation = "garbage",
+                        Value = new JObject()
+                    }
+                }
+            };
+
+            // act
+            Action act = () => _mapper.Map<MapperConfiguration>(req);
+
+            // assert
+            act.Should().Throw<ArgumentException>().WithMessage("Invalid operation garbage");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
+using Tba.WineEntry.Domain.Enums;
 
-namespace cqrs.DomainModels
+namespace Tba.WineEntry.Domain.Entities
 {
     public class WineEntry
     {

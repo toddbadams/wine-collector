@@ -1,8 +1,8 @@
 using System;
-using cqrs.Commands;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Tba.WineEntry.Application.Commands;
 using Xunit;
 
 namespace cqrs.Test.Commands

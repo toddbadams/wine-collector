@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using cqrs.Commands;
-using Tba.WineEntry.ApiModels.Create;
+using Tba.WineEntry.Application.Commands;
+using Tba.WineEntry.Application.Models.Create;
 using Xunit;
 
 namespace cqrs.Test.Commands
@@ -10,7 +10,7 @@ namespace cqrs.Test.Commands
         [Fact]
         public void test()
         {
-            Mapper.Initialize(_ => _.CreateMap<CreateRequest, CommandCollection>()
+            Mapper.Initialize(_ => _.CreateMap<CreateWineEntryRequest, CommandCollection>()
                 .ConvertUsing(new CreateRequestConverter()));
             Mapper.AssertConfigurationIsValid();
         }

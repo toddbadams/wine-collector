@@ -1,4 +1,4 @@
-﻿namespace cqrs
+﻿namespace Tba.WineEntry.Domain.Entities
 {
     public class Wine
     {

@@ -1,4 +1,6 @@
-﻿namespace cqrs
+﻿using cqrs;
+
+namespace Tba.WineEntry.Domain.Entities
 {
     public class Cellar
     {

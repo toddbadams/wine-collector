@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tba.WineEntry.ApiModels.Update
+namespace Tba.WineEntry.Application.Models.Update
 {
     public class UpdateOperationRequest
     {

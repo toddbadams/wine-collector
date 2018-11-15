@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace cqrs
+﻿namespace Tba.WineEntry.Domain.Enums
 {
     public enum BottleSize
     {
@@ -17,13 +12,5 @@ namespace cqrs
         Salmanazar = 9000,
         Balthazar = 1200,
         Nebuchadnezzar = 1500
-    }
-
-    public enum BottlesPerCase
-    {
-        One = 1,
-        Three = 3,
-        Six = 6,
-        Twelve = 12
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace Tba.WineEntry.ApiModels.Update
+namespace Tba.WineEntry.Application.Models.Update
 {
     public class UpdateRequest
     {

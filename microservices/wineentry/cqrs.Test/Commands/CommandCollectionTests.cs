@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using cqrs.Commands;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
+using Tba.WineEntry.Application.Commands;
 using Xunit;
 
 namespace cqrs.Test

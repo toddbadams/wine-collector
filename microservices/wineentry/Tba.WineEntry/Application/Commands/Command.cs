@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace cqrs.Commands
+namespace Tba.WineEntry.Application.Commands
 {
     public class Command
     {

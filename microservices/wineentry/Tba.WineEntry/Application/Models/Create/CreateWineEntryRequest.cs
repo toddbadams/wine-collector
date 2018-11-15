@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using cqrs;
 using Newtonsoft.Json;
+using Tba.WineEntry.Domain.Enums;
 
-namespace Tba.WineEntry.ApiModels.Create
+namespace Tba.WineEntry.Application.Models.Create
 {
-    public class CreateRequest
+    public class CreateWineEntryRequest 
     {
         [JsonProperty("quantity")]
         [Required, Range(1,int.MaxValue)]

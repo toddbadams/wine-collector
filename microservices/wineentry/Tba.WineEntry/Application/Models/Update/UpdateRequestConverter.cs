@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using cqrs.Commands;
 using Newtonsoft.Json.Linq;
+using Tba.WineEntry.Application.Commands;
 
-namespace Tba.WineEntry.ApiModels.Update
+namespace Tba.WineEntry.Application.Models.Update
 {
     public class UpdateRequestConverter : ITypeConverter<UpdateRequest, CommandCollection>
     {
@@ -29,7 +29,10 @@ namespace Tba.WineEntry.ApiModels.Update
             var commands = new CommandCollection(source.Version);
             foreach (var op in source.Operations)
             {
-                var cmd = Enum.Parse<CommandName>(op.Operation);
+                if (!Enum.TryParse<CommandName>(op.Operation, out var cmd))
+                {
+                    throw new ArgumentException($"Invalid operation {op.Operation}");
+                }
                 if (_dictionary.ContainsKey(cmd))
                 {
                     commands.Add(source.WineEntryId, cmd, op.Value);
