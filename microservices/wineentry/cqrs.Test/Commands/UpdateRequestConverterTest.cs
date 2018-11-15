@@ -3,8 +3,7 @@ using AutoMapper;
 using cqrs.Commands;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
-using Tba.WineEntry.Application.Commands;
-using Tba.WineEntry.Application.Models.Update;
+using Tba.WineEntry.Application.Commands.Update;
 using Xunit;
 
 namespace Tba.WineEntry.Tests.Commands

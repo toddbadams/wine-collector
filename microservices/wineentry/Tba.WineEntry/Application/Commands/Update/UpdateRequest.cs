@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace Tba.WineEntry.Application.Models.Update
+namespace Tba.WineEntry.Application.Commands.Update
 {
     public class UpdateRequest
     {

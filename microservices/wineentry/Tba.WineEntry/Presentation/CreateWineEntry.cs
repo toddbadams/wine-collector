@@ -8,8 +8,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Tba.WineEntry.Application.Commands;
+using Tba.WineEntry.Application.Commands.Create;
 using Tba.WineEntry.Application.Configuration;
-using Tba.WineEntry.Application.Models.Create;
 
 namespace cqrs
 {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using Tba.WineEntry.Application.Models;
 
-namespace Tba.WineEntry.Application.Models.Create
+namespace Tba.WineEntry.Application.Commands.Create
 {
     public class CreateWineEntryRequest 
     {

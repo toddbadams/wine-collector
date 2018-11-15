@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using AutoMapper;
 using cqrs.Commands;
 using Newtonsoft.Json.Linq;
-using Tba.WineEntry.Application.Commands;
 
-namespace Tba.WineEntry.Application.Models.Update
+namespace Tba.WineEntry.Application.Commands.Update
 {
     public class UpdateRequestConverter : ITypeConverter<UpdateRequest, CommandCollection>
     {
