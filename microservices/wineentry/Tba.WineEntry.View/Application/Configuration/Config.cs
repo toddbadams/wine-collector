@@ -1,16 +1,35 @@
 ﻿using System;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Tba.WineEntry.Application.Configuration
+namespace Tba.WineEntry.View.Application.Configuration
 {
     internal static class Config
     {
-        internal const string Db = "wine-entry-upsert";
-        internal const string Collection = "events";
+        internal const string Db = "wine-entry-view";
         internal const string DbConnectionStringSetting = "CosmosConnectionString";
-        internal const string TopicSendConnectionStringSetting = "TopicSendConnectionString";
         internal const string Route = "wines";
-        internal const string Topic = "wine-entry";
+
+        internal static class WineEntryStore
+        {
+            internal const string Collection = "wine-entries";
+            internal static Uri Uri => UriFactory.CreateDocumentCollectionUri(Db, Collection);
+            internal static Uri DocumentUri(string id) => UriFactory.CreateDocumentUri(Db, Collection, id);
+        }
+
+        internal static class WineEntryCreateTopic
+        {
+            internal const string Name = "wine-entry-create";
+            internal const string Subscriber = "wine-entry-view";
+            internal const string ListenConnectionStringSetting = "CreateTopicSendConnectionString";
+        }
+
+        internal static class WineEntryUpdateTopic
+        {
+            internal const string Name = "wine-entry-update";
+            internal const string Subscriber = "wine-entry-view";
+            internal const string ListenConnectionStringSetting = "UpdateTopicSendConnectionString";
+        }
 
         internal static class Logging
         {

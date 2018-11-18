@@ -1,8 +1,8 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,39 +29,61 @@ namespace cqrs
             try
             {
                 createRequest = await req.Content.ReadAsAsync<CreateWineEntryRequest>();
+                Validator.ValidateObject(createRequest,new ValidationContext(createRequest));
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ValidationSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),
                     correlationId,
                     nameof(CreateWineEntryRequest),
                     null,
-                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(createRequest)}");
+                    $"Valid request");
             }
-            catch (Exception ex)
+            catch (ArgumentNullException ex)
             {
-                log.LogError(Config.Logging.GetEventId(Config.Logging.EventType.ValidationSucceeded),
+                log.LogError(Config.Logging.GetEventId(Config.Logging.EventType.ValidationFailed),
                     ex,
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),
                     correlationId,
                     nameof(CreateWineEntryRequest),
                     null,
-                    $"CreateWineEntryRequest {JsonConvert.SerializeObject(createRequest)}");
+                    $"request is null");
+            }
+            catch (ValidationException ex)
+            {
+                log.LogError(Config.Logging.GetEventId(Config.Logging.EventType.ValidationFailed),
+                    ex,
+                    Config.Logging.Template,
+                    Config.Logging.Trigger.Http.ToString(),
+                    correlationId,
+                    nameof(CreateWineEntryRequest),
+                    null,
+                    $"Validation failed {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                log.LogError(Config.Logging.GetEventId(Config.Logging.EventType.ValidationFailed),
+                    ex,
+                    Config.Logging.Template,
+                    Config.Logging.Trigger.Http.ToString(),
+                    correlationId,
+                    nameof(CreateWineEntryRequest),
+                    null,
+                    $"unhandled exception");
             }
 
             // Convert to commands
             Command command = null;
             try
             {
-                command = new Command(Guid.NewGuid(), 0, EventName.WineEntryCreated, new JObject(createRequest));
+                command = new Command(Guid.NewGuid(), 0, EventName.WineEntryCreated, JObject.FromObject(createRequest));
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ProcessingSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(),
                     correlationId,
                     nameof(Command),
                     command.AggregateId,
-                    $"Command {JsonConvert.SerializeObject(command)}");
-
+                    $"Command created");
                 // Write commands to data store
                 await commandsOut.AddAsync(command);
             }

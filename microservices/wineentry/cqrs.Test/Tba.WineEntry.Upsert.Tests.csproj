@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tba.WineEntry\Tba.WineEntry.csproj" />
+    <ProjectReference Include="..\Tba.WineEntry\Tba.WineEntry.Upsert.csproj" />
   </ItemGroup>
 
 </Project>
