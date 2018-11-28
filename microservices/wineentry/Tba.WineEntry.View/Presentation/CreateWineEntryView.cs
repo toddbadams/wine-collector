@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.View.Application.Processors;
 using EventHandler = Tba.WineEntry.View.Application.Events.EventHandler;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 

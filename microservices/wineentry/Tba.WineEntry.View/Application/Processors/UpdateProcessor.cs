@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tba.WineEntry.View.Application.Configuration;
 using Tba.WineEntry.View.Application.Events;
 
-namespace Tba.WineEntry.View.Presentation
+namespace Tba.WineEntry.View.Application.Processors
 {
     public static class UpdateProcessor
     {

@@ -5,6 +5,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.View.Application.Processors;
 using EventHandler = Tba.WineEntry.View.Application.Events.EventHandler;
 
 namespace Tba.WineEntry.View.Presentation
