@@ -15,7 +15,7 @@ namespace Tba.WineEntry.Upsert.Presentation
             [CosmosDBTrigger(Config.Cosmos.Db, Config.Cosmos.Events.Collection,
                 ConnectionStringSetting = Config.Cosmos.DbConnectionStringSetting,
             LeaseCollectionName = "leases")]IReadOnlyList<Document> events,
-            [ServiceBus(Config.ServiceBus.WineEntry.Topic, Connection = Config.ServiceBus.WineEntry.SendConnectionStringSetting)]IAsyncCollector<string> messageAsyncCollector,
+            [ServiceBus(Config.ServiceBus.WineEntryCreate.Topic, Connection = Config.ServiceBus.WineEntryCreate.SendConnectionStringSetting)]IAsyncCollector<string> messageAsyncCollector,
             ILogger log)
         {
             foreach (var e in events)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 
-namespace Tba.WineEntry
+namespace Tba.WineEntry.Integration
 {
     internal class CosmosDbConnectionString
     {

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.Configuration;
 
 namespace Tba.WineEntry.View.Application.Events
 {

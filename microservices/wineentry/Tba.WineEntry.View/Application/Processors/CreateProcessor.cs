@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
-using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.Configuration;
 using Tba.WineEntry.View.Application.Events;
 using Tba.WineEntry.View.Domain;
 
@@ -20,7 +20,7 @@ namespace Tba.WineEntry.View.Application.Processors
                         .ConvertUsing(new WineEntryConverter()))
                     .CreateMapper()
                     .Map<Domain.WineEntry>(e);
-                await client.CreateDocumentAsync(Config.WineEntryStore.Uri, wineEntry);
+                await client.CreateDocumentAsync(Config.Cosmos.WineEntry.Uri, wineEntry);
             }
             // If either documentsFeedOrDatabaseLink or document is not set.
             catch (ArgumentNullException ex)

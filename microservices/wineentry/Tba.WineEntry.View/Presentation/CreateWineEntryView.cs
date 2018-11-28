@@ -1,13 +1,10 @@
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.Configuration;
 using Tba.WineEntry.View.Application.Processors;
 using EventHandler = Tba.WineEntry.View.Application.Events.EventHandler;
-using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace Tba.WineEntry.View.Presentation
 {
@@ -15,12 +12,12 @@ namespace Tba.WineEntry.View.Presentation
     {
         [FunctionName("CreateWineEntryView")]
         public static async Task Run(
-            [ServiceBusTrigger(Config.WineEntryCreateTopic.Name, Config.WineEntryCreateTopic.Subscriber,
-                Connection = Config.WineEntryCreateTopic.ListenConnectionStringSetting)]
+            [ServiceBusTrigger(Config.ServiceBus.WineEntryCreate.Topic, Config.ServiceBus.WineEntryCreate.Subscriber,
+                Connection = Config.ServiceBus.WineEntryCreate.ListenConnectionStringSetting)]
             string message,
             string correlationId,
-            [CosmosDBTrigger(Config.Db, Config.WineEntryStore.Collection,
-                ConnectionStringSetting = Config.DbConnectionStringSetting)]IDocumentClient client,
+            [CosmosDBTrigger(Config.Cosmos.Db, Config.Cosmos.WineEntry.Collection,
+                ConnectionStringSetting = Config.Cosmos.DbConnectionStringSetting)]IDocumentClient client,
             ILogger log)
         {
             if (EventHandler.TryDeserializeAndValidate(message, log, correlationId, out var e))

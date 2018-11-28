@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Tba.WineEntry.Configuration
 {
@@ -17,6 +19,15 @@ namespace Tba.WineEntry.Configuration
             public static class Events
             {
                 public const string Collection = "events";
+                public static Uri Uri => UriFactory.CreateDocumentCollectionUri(Db, Collection);
+                internal static Uri DocumentUri(string id) => UriFactory.CreateDocumentUri(Db, Collection, id);
+            }
+
+            public static class WineEntry
+            {
+                public const string Collection = "wine-entries";
+                public static Uri Uri => UriFactory.CreateDocumentCollectionUri(Db, Collection);
+                public static Uri DocumentUri(string id) => UriFactory.CreateDocumentUri(Db, Collection, id);
             }
 
             public enum ClientMessage
@@ -35,10 +46,19 @@ namespace Tba.WineEntry.Configuration
 
         public static class ServiceBus
         {
-            public static class WineEntry
+            public static class WineEntryCreate
             {
-                public const string Topic = "wine-entry";
-                public const string SendConnectionStringSetting = "TopicSendConnectionString";
+                public const string Topic = "wine-entry-create";
+                public const string Subscriber = "wine-entry-view";
+                public const string SendConnectionStringSetting = "CreateTopicSendConnectionString";
+                public const string ListenConnectionStringSetting = "CreateTopicSendConnectionString";
+            }
+
+            public static class WineEntryUpdate
+            {
+                public const string Topic = "wine-entry-update";
+                public const string Subscriber = "wine-entry-view";
+                public const string ListenConnectionStringSetting = "UpdateTopicSendConnectionString";
             }
         }
 

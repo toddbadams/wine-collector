@@ -5,7 +5,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Tba.WineEntry.Configuration;
 
-namespace Tba.WineEntry
+namespace Tba.WineEntry.Integration
 {
     public class CosmosDbService
     {

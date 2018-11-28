@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.Configuration;
 using Tba.WineEntry.View.Application.Processors;
 using EventHandler = Tba.WineEntry.View.Application.Events.EventHandler;
 
@@ -14,12 +14,12 @@ namespace Tba.WineEntry.View.Presentation
     {
         [FunctionName("UpdateWineEntryView")]
         public static async Task Run(
-            [ServiceBusTrigger(Config.WineEntryUpdateTopic.Name, Config.WineEntryUpdateTopic.Subscriber,
-                Connection = Config.WineEntryUpdateTopic.ListenConnectionStringSetting)]
+            [ServiceBusTrigger(Config.ServiceBus.WineEntryUpdate.Topic, Config.ServiceBus.WineEntryUpdate.Subscriber,
+                Connection = Config.ServiceBus.WineEntryUpdate.ListenConnectionStringSetting)]
             string message,
             string correlationId,
-            [CosmosDBTrigger(Config.Db, Config.WineEntryStore.Collection,
-                ConnectionStringSetting = Config.DbConnectionStringSetting)]IDocumentClient client,
+            [CosmosDBTrigger(Config.Cosmos.Db, Config.Cosmos.WineEntry.Collection,
+                ConnectionStringSetting = Config.Cosmos.DbConnectionStringSetting)]IDocumentClient client,
             ILogger log)
         {
             if (EventHandler.TryDeserializeAndValidate(message, log, correlationId, out var e))

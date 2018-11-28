@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
-using Tba.WineEntry.View.Application.Configuration;
+using Tba.WineEntry.Configuration;
 using Tba.WineEntry.View.Application.Events;
 
 namespace Tba.WineEntry.View.Application.Processors
@@ -15,9 +15,9 @@ namespace Tba.WineEntry.View.Application.Processors
             Domain.WineEntry wineEntry = null;
             try
             {
-                wineEntry = await client.ReadDocumentAsync<Domain.WineEntry>(Config.WineEntryStore.DocumentUri(e.AggregateId));
+                wineEntry = await client.ReadDocumentAsync<Domain.WineEntry>(Config.Cosmos.WineEntry.DocumentUri(e.AggregateId));
                 wineEntry.ApplyEvent(e);
-                await client.UpsertDocumentAsync(Config.WineEntryStore.DocumentUri(e.AggregateId), wineEntry);
+                await client.UpsertDocumentAsync(Config.Cosmos.WineEntry.DocumentUri(e.AggregateId), wineEntry);
                 log.LogInformation(Config.Logging.GetEventId(Config.Logging.EventType.ProcessingSucceeded),
                     Config.Logging.Template,
                     Config.Logging.Trigger.Http.ToString(), correlationId, nameof(Domain.WineEntry), e.AggregateId,
