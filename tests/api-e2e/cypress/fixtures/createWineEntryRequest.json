@@ -1,0 +1,9 @@
+{
+    "quantity": 1,
+    "bottleSize": 750,
+    "bottlesPerCase": 6,
+    "acquiredOn": "2008-09-15T15:53:00+05:00",
+    "costPerBottle": 54.50,
+    "cellar": { "key": "22aeeaa1-66b5-4d65-97d6-d72d2c099399", "value": "Bob's cellar"},
+    "wine": { "key": "22aeeaa1-66b5-4d65-97d6-d72d2c099399", "value": "NV Krug Grande Cuvée 160ème Édition"}
+}

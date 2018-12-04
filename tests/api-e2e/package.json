@@ -1,0 +1,28 @@
+{
+  "name": "api-e2e",
+  "version": "1.0.0",
+  "description": "api e2e tests",
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "@cypress/webpack-preprocessor": "^4.0.2",
+    "babel-loader": "^8.0.4",
+    "cypress": "^3.1.2",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.1",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "scripts": {
+    "start": "echo",
+    "cypress:run": "./node_modules/.bin/cypress run",
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "build": "./node_modules/.bin/webpack --output-filename out.js --entry ./cypress/integration/spec.ts",
+    "lint": "./node_modules/.bin/tslint --project ./tsconfig.json",
+    "postlint": "npm run tsc",
+    "tsc": "./node_modules/.bin/tsc --pretty --noEmit",
+    "precypress:run": "npm run lint"
+  },
+  "author": "Todd B Adams",
+  "license": "ISC"
+}

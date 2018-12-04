@@ -15,20 +15,37 @@ namespace Tba.WineEntry.Integration
         {
             var connectionString = Environment.GetEnvironmentVariable(Config.Cosmos.DbConnectionStringSetting);
             var connection = new CosmosDbConnectionString(connectionString);
-            var connectionPolicy = new ConnectionPolicy();
-            connectionPolicy.RetryOptions = new RetryOptions
+            var connectionPolicy = new ConnectionPolicy
             {
-                MaxRetryAttemptsOnThrottledRequests = Config.Cosmos.MaxRetryAttemptsOnThrottledRequests,
-                MaxRetryWaitTimeInSeconds = Config.Cosmos.MaxRetryWaitTimeInSeconds
+                RetryOptions = new RetryOptions
+                {
+                    MaxRetryAttemptsOnThrottledRequests = Config.Cosmos.MaxRetryAttemptsOnThrottledRequests,
+                    MaxRetryWaitTimeInSeconds = Config.Cosmos.MaxRetryWaitTimeInSeconds
+                }
             };
             Client = new DocumentClient(connection.ServiceEndpoint, connection.AuthKey, connectionPolicy);
         }
 
         public async Task<Config.Cosmos.ClientMessage> UpsertDocumentAsync(Uri documentCollectionUri, Document document)
         {
+
+            Func<ResourceResponse<Document>, Task> ActAsync = () => Client.UpsertDocumentAsync(documentCollectionUri, document);
+            return await Run(ActAsync);
+
+        }
+
+        public async Task<Config.Cosmos.ClientMessage> CreateDocumentAsync(Uri documentCollectionUri, Document document)
+        {
+
+        }
+
+
+        private async Task<T> Run<T>(Func<T, Task> act)
+            where T : Result, new()
+        {
             try
             {
-                ResourceResponse<Document> response = await Client.UpsertDocumentAsync(documentCollectionUri, document);
+                var result = await act();
                 return Config.Cosmos.ClientMessage.Success;
             }
             // If either documentsFeedOrDatabaseLink or document is not set.
