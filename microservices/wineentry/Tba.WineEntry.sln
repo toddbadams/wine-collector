@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tba.WineEntry.Upsert", "Tba
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tba.WineEntry", "Tba.WineEntry\Tba.WineEntry.csproj", "{EBCED811-35E0-49B7-86F3-5E808D044D06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tba.EventStore", "Tba.EventStore\Tba.EventStore.csproj", "{165CEF1C-215D-4289-A57F-54D9A92B8F4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EBCED811-35E0-49B7-86F3-5E808D044D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBCED811-35E0-49B7-86F3-5E808D044D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBCED811-35E0-49B7-86F3-5E808D044D06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{165CEF1C-215D-4289-A57F-54D9A92B8F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{165CEF1C-215D-4289-A57F-54D9A92B8F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{165CEF1C-215D-4289-A57F-54D9A92B8F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{165CEF1C-215D-4289-A57F-54D9A92B8F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
