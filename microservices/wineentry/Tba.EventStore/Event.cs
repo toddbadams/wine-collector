@@ -8,15 +8,6 @@ namespace Tba.EventStore
 {
     public class Event
     {
-        private enum ExceptionMessage
-        {
-            AggregateIdNullOrEmpty,
-            AggregateTypeNullOrEmpty,
-            EventTypeNullOrEmpty,
-            SequenceNegative,
-            ValueNull
-        }
-
         /// <summary>
         /// The identifier of the aggregate (entity) that will have the event applied
         /// </summary>
@@ -44,12 +35,15 @@ namespace Tba.EventStore
         [JsonProperty("eventType")]
         public string EventType { get; }
 
+        [JsonProperty("eventPurpose")]
+        public EventPurpose EventPurpose { get; }
+
         /// <summary>
         /// Unique sequence of the event as applied to a specific aggregate.
         /// There is no way to ensure it is actually sequential at this layer, this must be validated at a higher layer.
         /// </summary>
         [JsonProperty("sequence")]
-        public int Sequence { get; }
+        public int? Sequence { get; set; }
 
         /// <summary>
         /// A dynamic value or payload for the event being applied.
@@ -65,24 +59,38 @@ namespace Tba.EventStore
         public string CorrelationId { get; set; }
 
         [JsonConstructor]
-        public Event(Guid aggregateId, string aggregateType, int sequence, string eventType, JObject value)
+        public Event(Guid aggregateId, string aggregateType, int sequence, string eventType, string eventPurpose, JObject value)
         {
             AggregateId = aggregateId != Guid.Empty
                 ? aggregateId
-                : throw new ArgumentException(ExceptionMessage.AggregateIdNullOrEmpty.ToString());
+                : throw new ArgumentNullException(nameof(aggregateId));
             AggregateType = !string.IsNullOrWhiteSpace(aggregateType)
                 ? aggregateType
-                : throw new ArgumentException(ExceptionMessage.AggregateTypeNullOrEmpty.ToString());
+                : throw new ArgumentNullException(nameof(aggregateType));
             EventType = !string.IsNullOrWhiteSpace(eventType)
                 ? eventType
-                : throw new ArgumentException(ExceptionMessage.EventTypeNullOrEmpty.ToString());
-            Sequence = sequence >= 0
-                ? sequence
-                : throw new ArgumentException(ExceptionMessage.SequenceNegative.ToString());
-            Value = value ?? throw new ArgumentNullException(ExceptionMessage.ValueNull.ToString());
+                : throw new ArgumentNullException(nameof(eventType));
+            EventPurpose = (EventPurpose)Enum.Parse(typeof(EventPurpose), eventPurpose);
+            switch (EventPurpose)
+            {
+                case EventPurpose.CreateAggregate:
+                    Sequence = 0;
+                    break;
+                case EventPurpose.UpdateAggregate:
+                    Sequence = null;
+                    break;
+                case EventPurpose.UpdateAggregateWithStrictVersion:
+                    Sequence = sequence >= 1
+                            ? sequence
+                            : throw new ArgumentOutOfRangeException(nameof(sequence));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sequence));
+            }
+            Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        public  Message ToMessage()
+        public Message ToMessage()
         {
             return new Message(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(this)))
             {

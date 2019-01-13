@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
@@ -11,6 +12,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
+using PollyDemos.Async;
 
 namespace Tba.EventStore
 {
@@ -23,6 +26,10 @@ namespace Tba.EventStore
         public const string EventTrigger = "Http";
         public const string EntityType = "ApplicationEvent";
         private const int MethodEventBase = 0;
+
+        // retry policy settings
+        private const int RetryCount = 3;
+        private static TimeSpan RetryDuration(int attempt) => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt));
 
         private enum ProcessStep
         {
@@ -86,7 +93,7 @@ namespace Tba.EventStore
 
             // validate
             eventId = StaticSettings.EventId(MethodEventBase, (int)ProcessStep.Validation);
-            var docUri = (UriFactory.CreateDocumentCollectionUri(StaticSettings.Db, StaticSettings.Collection);
+            var docUri = UriFactory.CreateDocumentCollectionUri(StaticSettings.Db, StaticSettings.Collection);
             try
             {
                 Validator.ValidateObject(eventModel, new ValidationContext(eventModel));
@@ -105,24 +112,35 @@ namespace Tba.EventStore
 
             // check for valid event sequence of the event in our event store
             // This may result in a stale sequence number, but we catch that in the "create document" step
-            int sequence = -1;
-            try
+            var sequenceValidated = true;
+            if (eventModel.EventPurpose != EventPurpose.CreateAggregate)
             {
-                sequence = documentClient.CreateDocumentQuery<int>(docUri, MaxSequence(eventModel.AggregateId))
-                    .AsEnumerable().FirstOrDefault();
+                try
+                {
+                    Policy.Handle<Exception>()
+                        .WaitAndRetry(RetryCount, RetryDuration, (ex, calculatedWaitDuration) =>
+                                logger.LogWarning(eventId, StaticSettings.Template, EventTrigger, correlationId, EntityType, 
+                                    eventModel.EventId, $"{ ProcessStep.SequenceValidation.ToString()} {ex.Message}"))
+                        .Execute(ct =>
+                            {
+                                sequenceValidated = TryExecuteSequenceValidation(logger, eventId, correlationId,
+                                    documentClient, docUri, eventModel);
+                            }, CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(logger, supportNotifier, eventId, correlationId, ProcessStep.SequenceValidation, ex,
+                        payload);
+                }
 
+                if (!sequenceValidated)
+                {
+                    return BadRequest(logger, eventId, correlationId, ProcessStep.SequenceValidation, payload);
+                }
             }
-            catch (DocumentClientException ex)
-            {
-                return BadRequest(logger, supportNotifier, eventId, correlationId, ex, payload);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(logger, supportNotifier, eventId, correlationId, ProcessStep.CreateDocument, ex, payload);
-            }
-
 
             // Create document
+            // todo: implement retry
             eventId = StaticSettings.EventId(MethodEventBase, (int)ProcessStep.CreateDocument);
             try
             {
@@ -153,7 +171,35 @@ namespace Tba.EventStore
             }
         }
 
+        private static bool TryExecuteSequenceValidation(ILogger logger, EventId eventId, string correlationId,
+            IDocumentClient documentClient, Uri docUri, Event eventModel)
+        {
+            try
+            {
+                var sequence = documentClient.CreateDocumentQuery<int>(docUri, MaxSequence(eventModel.AggregateId))
+                    .AsEnumerable().FirstOrDefault();
+                if (eventModel.EventPurpose == EventPurpose.UpdateAggregate)
+                {
+                    eventModel.Sequence = sequence >= 0
+                        ? sequence
+                        : throw new ArgumentOutOfRangeException(nameof(documentClient));
+                }
 
+                if (eventModel.EventPurpose == EventPurpose.UpdateAggregateWithStrictVersion
+                    && eventModel.Sequence != sequence + 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sequence));
+                }
+
+                return true;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                logger.LogWarning(eventId, StaticSettings.Template, EventTrigger, correlationId, EntityType,
+                    eventModel.EventId, $"{ProcessStep.SequenceValidation.ToString()} {ex.Message}");
+                return false;
+            }
+        }
 
         /// <summary>
         /// Log an error for the unhandled exception
