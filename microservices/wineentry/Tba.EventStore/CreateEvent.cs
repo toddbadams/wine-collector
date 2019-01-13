@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
-using PollyDemos.Async;
 
 namespace Tba.EventStore
 {
@@ -37,11 +36,6 @@ namespace Tba.EventStore
             Validation = 2,
             SequenceValidation = 3,
             CreateDocument = 4
-        }
-
-        private enum DeserializeMessage
-        {
-            NullRequestBody
         }
 
         private enum ValidateMessage
@@ -76,11 +70,11 @@ namespace Tba.EventStore
                 payload = await request.Content.ReadAsStringAsync();
                 eventModel = JsonConvert.DeserializeObject<Event>(payload);
                 logger.LogInformation(eventId, StaticSettings.Template, EventTrigger, correlationId,
-                    EntityType, null, ProcessStep.Deserialize.ToString());
+                    null, null, ProcessStep.Deserialize.ToString());
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
-                return BadRequest(logger, eventId, correlationId, ProcessStep.Deserialize, DeserializeMessage.NullRequestBody.ToString());
+                return BadRequest(logger, eventId, correlationId, ProcessStep.Deserialize, ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -112,15 +106,16 @@ namespace Tba.EventStore
 
             // check for valid event sequence of the event in our event store
             // This may result in a stale sequence number, but we catch that in the "create document" step
-            var sequenceValidated = true;
             if (eventModel.EventPurpose != EventPurpose.CreateAggregate)
             {
+                eventId = StaticSettings.EventId(MethodEventBase, (int)ProcessStep.SequenceValidation);
+                var sequenceValidated = true;
                 try
                 {
                     Policy.Handle<Exception>()
-                        .WaitAndRetry(RetryCount, RetryDuration, (ex, calculatedWaitDuration) =>
+                        .WaitAndRetry(RetryCount, RetryDuration, (ex, c) =>
                                 logger.LogWarning(eventId, StaticSettings.Template, EventTrigger, correlationId, EntityType, 
-                                    eventModel.EventId, $"{ ProcessStep.SequenceValidation.ToString()} {ex.Message}"))
+                                    eventModel.EventId, $"{ProcessStep.SequenceValidation.ToString()} retryTime: {c}, {ex.Message}"))
                         .Execute(ct =>
                             {
                                 sequenceValidated = TryExecuteSequenceValidation(logger, eventId, correlationId,
