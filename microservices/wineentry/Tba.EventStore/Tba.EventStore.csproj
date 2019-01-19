@@ -14,4 +14,10 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="UniqueIdGenerator.Net">
+      <HintPath>..\..\..\..\UniqueIdGenerator\IdGenerator.net\bin\Debug\UniqueIdGenerator.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
