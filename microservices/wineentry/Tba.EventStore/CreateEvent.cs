@@ -146,7 +146,7 @@ namespace Tba.EventStore
         {
             return new Message(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(request.Value)))
             {
-                ContentType = request.EventType,
+                ContentType = "application/json",
                 CorrelationId = correlationId,
                 Label = $"{request.EventTypeVersion}{Separator}{request.EventTypeVersion}",
                 MessageId = $"{request.AggregateId}{Separator}{Guid.NewGuid()}",
@@ -158,6 +158,6 @@ namespace Tba.EventStore
         /// Create an EventId used for logging
         /// </summary>
         private static EventId EventId(ProcessStep step) =>
-            new EventId(MethodLevelEventId + (int)step + ServiceLevelEventId, step.ToString());
+            new EventId(ServiceLevelEventId + MethodLevelEventId + (int)step, step.ToString());
     }
 }
