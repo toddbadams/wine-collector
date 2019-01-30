@@ -31,7 +31,7 @@ $vnet1 = New-AzureRmVirtualNetwork  `
 $subnet1Config = New-AzureRmVirtualNetworkSubnetConfig `
     -Name $subnet1Name `
     -AddressPrefix 10.0.0.0/24 `
-    -VirtualNetwork $vnet1
+    -VirtualNetwork $vnet1Name
 
 # Write the subnet configuration to the virtual network.
 $vnet1 | Set-AzureRmVirtualNetwork
@@ -59,7 +59,7 @@ $vnet2 = New-AzureRmVirtualNetwork  `
 $subnet2Config = New-AzureRmVirtualNetworkSubnetConfig `
     -Name $subnet2Name `
     -AddressPrefix 10.1.0.0/24 `
-    -VirtualNetwork $vnet2
+    -VirtualNetwork $vnet2Name
 
 # Write the subnet configuration to the virtual network.
 $vnet2 | Set-AzureRmVirtualNetwork
@@ -73,7 +73,7 @@ New-AzureRmVm `
   -VirtualNetworkName $vnet2Name  `
   -SubnetName $subnetName `
   -ImageName "Win2016Datacenter" `
-  -Name  $vnet2Name `
+  -Name  $vm2Name `
   -AsJob
 
 
@@ -92,3 +92,7 @@ Add-AzureRmVirtualNetworkPeering `
   -RemoteVirtualNetworkId $vnet1.Id
 
 
+# get the public IP address of a VM
+Get-AzureRmPublicIpAddress `
+  -Name $vm1Name `
+  -ResourceGroupName $resourceGroupName | Select IpAddress
